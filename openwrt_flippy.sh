@@ -125,7 +125,7 @@ init_var() {
 
     # Install the compressed package
     sudo apt-get -qq update
-    sudo apt-get -qq install -y curl git coreutils p7zip p7zip-full zip unzip gzip xz-utils pigz zstd jq tar
+    sudo apt-get -qq install -y curl git coreutils p7zip p7zip-full zip unzip gzip xz-utils pigz zstd jq tar rename
 
     # Specify the default value
     [[ -n "${SCRIPT_REPO_URL}" ]] || SCRIPT_REPO_URL="${SCRIPT_REPO_URL_VALUE}"
@@ -314,12 +314,8 @@ query_kernel() {
                 kernel_verpatch="$(echo ${kernel_var} | awk -F '.' '{print $1"."$2}')"
 
                 # Query the latest kernel version
-                latest_version="$(
-                    curl -fsSL \
-                        ${kernel_api}/releases/expanded_assets/kernel_${vb} |
-                        grep -oE "${kernel_verpatch}.[0-9]+.*.tar.gz" | sed 's/.tar.gz//' |
-                        sort -urV | head -n 1
-                )"
+                latest_version="$(curl -fsSL ${kernel_api}/releases/expanded_assets/kernel_${vb} | grep -oE "${kernel_verpatch}\.[0-9]+.*.tar.gz" | sed 's/.tar.gz//' | sort -urV | head -n 1)"
+                [[ ${KERNEL_REPO_URL} == *ffuqiangg* ]] && latest_version="$(curl -fsSL ${kernel_api}/releases | grep -oE "kernel_${kernel_verpatch}\.[0-9]+" | sed 's/kernel_//' | sort -urV | head -n 1)"
 
                 if [[ "$?" -eq "0" && -n "${latest_version}" ]]; then
                     TMP_ARR_KERNELS[${i}]="${latest_version}"
@@ -378,8 +374,10 @@ download_kernel() {
             # Set the kernel download list
             if [[ "${vb}" == "rk3588" ]]; then
                 down_kernel_list=(${RK3588_KERNEL[@]})
+                KERNEL_REPO_URL="${KERNEL_REPO_URL_VALUE}"
             elif [[ "${vb}" == "rk35xx" ]]; then
                 down_kernel_list=(${RK35XX_KERNEL[@]})
+                KERNEL_REPO_URL="${KERNEL_REPO_URL_VALUE}"
             else
                 down_kernel_list=(${STABLE_KERNEL[@]})
             fi
@@ -393,6 +391,7 @@ download_kernel() {
             for kernel_var in "${down_kernel_list[@]}"; do
                 if [[ ! -d "${kernel_path}/${kernel_var}" ]]; then
                     kernel_down_from="https://github.com/${KERNEL_REPO_URL}/releases/download/kernel_${vb}/${kernel_var}.tar.gz"
+                    [[ "${KERNEL_REPO_URL}" == *ffuqiangg* ]] && kernel_down_from="https://github.com/${KERNEL_REPO_URL}/releases/download/kernel_${kernel_var}/${kernel_var}.tar.gz"
                     echo -e "${INFO} (${x}.${i}) [ ${vb} - ${kernel_var} ] Kernel download from [ ${kernel_down_from} ]"
 
                     # Download the kernel file. If the download fails, try again 10 times.
@@ -404,7 +403,7 @@ download_kernel() {
 
                     # Decompress the kernel file
                     tar -mxf "${kernel_path}/${kernel_var}.tar.gz" -C "${kernel_path}"
-                    [[ "${?}" -eq "0" ]] || error_msg "[ ${kernel_var} ] kernel decompression failed."
+                    [[ "${?}" -ne "0" ]] && error_msg "[ ${kernel_var} ] kernel decompression failed."
                 else
                     echo -e "${INFO} (${x}.${i}) [ ${vb} - ${kernel_var} ] Kernel is in the local directory."
                 fi
@@ -431,10 +430,10 @@ make_openwrt() {
     for PACKAGE_VAR in "${PACKAGE_OPENWRT[@]}"; do
         {
             # Distinguish between different OpenWrt and use different kernel
-            if [[ " ${PACKAGE_OPENWRT_RK3588[@]} " =~ " ${PACKAGE_VAR} " ]]; then
+            if [[ "${PACKAGE_OPENWRT_RK3588[@]}" =~ "${PACKAGE_VAR}" ]]; then
                 build_kernel=(${RK3588_KERNEL[@]})
                 vb="rk3588"
-            elif [[ " ${PACKAGE_OPENWRT_RK35XX[@]} " =~ " ${PACKAGE_VAR} " ]]; then
+            elif [[ "${PACKAGE_OPENWRT_RK35XX[@]}" =~ "${PACKAGE_VAR}" ]]; then
                 build_kernel=(${RK35XX_KERNEL[@]})
                 vb="rk35xx"
             else
@@ -498,6 +497,7 @@ ENABLE_WIFI_K504="${ENABLE_WIFI_K504}"
 ENABLE_WIFI_K510="${ENABLE_WIFI_K510}"
 DISTRIB_REVISION="${DISTRIB_REVISION}"
 DISTRIB_DESCRIPTION="${DISTRIB_DESCRIPTION}"
+BUILD_DATE="${BUILD_DATE}"
 EOF
 
                     #echo -e "${INFO} make.env file info:"
@@ -546,11 +546,11 @@ EOF
                         echo -e "${STEPS} (${i}.${k}) Start making compressed files in the [ ${SELECT_OUTPUTPATH} ] directory."
                         cd /opt/${SELECT_PACKITPATH}/${SELECT_OUTPUTPATH}
                         case "${GZIP_IMGS}" in
-                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %' ;;
-                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %' ;;
-                            zst | .zst)    sudo zstd --rm *.img ;;
-                            xz | .xz)      sudo xz -z *.img ;;
-                            gz | .gz | *)  sudo pigz -f *.img ;;
+                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %'; rename -v "s/.img//" %.7z' ;;
+                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %'; rename -v "s/.img//" %.zip' ;;
+                            zst | .zst)    sudo zstd --rm *.img; rename -v 's/.img//' *.zst ;;
+                            xz | .xz)      sudo xz -z *.img; rename -v 's/.img//' *.xz ;;
+                            gz | .gz | *)  sudo pigz -f *.img; rename -v 's/.img//' *.gz ;;
                         esac
                     }
 
@@ -600,7 +600,7 @@ out_github_env() {
 echo -e "${STEPS} Welcome to use the OpenWrt packaging tool! \n"
 echo -e "${INFO} Server CPU configuration information: \n$(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c) \n"
 
-# Start initializing variables
+# Start Initializing variables
 init_var
 init_packit_repo
 
