@@ -113,7 +113,6 @@ OPENWRT_INSTALL="${PWD}/files/openwrt-install-amlogic"
 OPENWRT_UPDATE="${PWD}/files/openwrt-update-amlogic"
 OPENWRT_KERNEL="${PWD}/files/openwrt-kernel"
 OPENWRT_BACKUP="${PWD}/files/openwrt-backup"
-OPENWRT_SWAP="${PWD}/files/openwrt-swap"
 
 # 20211019 add
 FIRSTRUN_SCRIPT="${PWD}/files/first_run.sh"
@@ -179,7 +178,6 @@ echo "修改根文件系统相关配置 ... "
 cd "$TGT_ROOT" || exit
 [ -f ./etc/config/cpufreq ] && sed -i "/cpufreq/a\  option governor0 'schedutil'\n  option minfreq0 '1000000'\n  option maxfreq0 '1512000'" ./etc/config/cpufreq
 sed -e 's,/bin/ash,/bin/bash,' -i ./etc/passwd; sed -e 's,/bin/ash,/bin/bash,' -i ./usr/libexec/login.sh
-[[ -f "${OPENWRT_SWAP}" ]] && cp -f "${OPENWRT_SWAP}" ./usr/sbin/
 copy_supplement_files
 extract_glibc_programs
 adjust_docker_config
