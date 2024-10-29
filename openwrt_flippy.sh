@@ -431,7 +431,7 @@ download_kernel() {
 
                     # Decompress the kernel file
                     tar -mxf "${kernel_path}/${kernel_var}.tar.gz" -C "${kernel_path}"
-                    [[ "${?}" -ne "0" ]] && error_msg "[ ${kernel_var} ] kernel decompression failed."
+                    [[ "${?}" -eq "0" ]] && error_msg "[ ${kernel_var} ] kernel decompression failed."
                 else
                     echo -e "${INFO} (${x}.${i}) [ ${vb} - ${kernel_var} ] Kernel is in the local directory."
                 fi
@@ -458,10 +458,10 @@ make_openwrt() {
     for PACKAGE_VAR in "${PACKAGE_OPENWRT[@]}"; do
         {
             # Distinguish between different OpenWrt and use different kernel
-            if [[ "${PACKAGE_OPENWRT_RK3588[@]}" =~ "${PACKAGE_VAR}" ]]; then
+            if [[ " ${PACKAGE_OPENWRT_RK3588[@]} " =~ " ${PACKAGE_VAR} " ]]; then
                 build_kernel=(${RK3588_KERNEL[@]})
                 vb="rk3588"
-            elif [[ "${PACKAGE_OPENWRT_RK35XX[@]}" =~ "${PACKAGE_VAR}" ]]; then
+            elif [[ " ${PACKAGE_OPENWRT_RK35XX[@]} " =~ " ${PACKAGE_VAR} " ]]; then
                 build_kernel=(${RK35XX_KERNEL[@]})
                 vb="rk35xx"
             else
