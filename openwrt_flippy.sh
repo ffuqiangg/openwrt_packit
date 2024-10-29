@@ -431,7 +431,7 @@ download_kernel() {
 
                     # Decompress the kernel file
                     tar -mxf "${kernel_path}/${kernel_var}.tar.gz" -C "${kernel_path}"
-                    [[ "${?}" -eq "0" ]] && error_msg "[ ${kernel_var} ] kernel decompression failed."
+                    [[ "${?}" -eq "0" ]] || error_msg "[ ${kernel_var} ] kernel decompression failed."
                 else
                     echo -e "${INFO} (${x}.${i}) [ ${vb} - ${kernel_var} ] Kernel is in the local directory."
                 fi
