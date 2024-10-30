@@ -580,8 +580,8 @@ EOF
                         echo -e "${STEPS} (${i}.${k}) Start making compressed files in the [ ${SELECT_OUTPUTPATH} ] directory."
                         cd /opt/${SELECT_PACKITPATH}/${SELECT_OUTPUTPATH}
                         case "${GZIP_IMGS}" in
-                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %'; rename -v "s/.img//" %.7z ;;
-                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %'; rename -v "s/.img//" %.zip ;;
+                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %; rename -v "s/.img//" %.7z' ;;
+                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %; rename -v "s/.img//" %.zip' ;;
                             zst | .zst)    sudo zstd --rm *.img; rename -v 's/.img//' *.zst ;;
                             xz | .xz)      sudo xz -z *.img; rename -v 's/.img//' *.xz ;;
                             gz | .gz | *)  sudo pigz -f *.img; rename -v 's/.img//' *.gz ;;
