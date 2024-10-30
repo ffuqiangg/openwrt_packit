@@ -137,7 +137,6 @@ init_var() {
     [[ -n "${PACKAGE_SOC}" ]] || PACKAGE_SOC="${PACKAGE_SOC_VALUE}"
     [[ -n "${KERNEL_AUTO_LATEST}" ]] || KERNEL_AUTO_LATEST="${KERNEL_AUTO_LATEST_VALUE}"
     [[ -n "${GZIP_IMGS}" ]] || GZIP_IMGS="${GZIP_IMGS_VALUE}"
-    echo -e "${INFO} GZIP_IMGS = ${GZIP_IMGS}"
     [[ -n "${SELECT_PACKITPATH}" ]] || SELECT_PACKITPATH="${SELECT_PACKITPATH_VALUE}"
     [[ -n "${SELECT_OUTPUTPATH}" ]] || SELECT_OUTPUTPATH="${SELECT_OUTPUTPATH_VALUE}"
     [[ -n "${SAVE_OPENWRT_ARMVIRT}" ]] || SAVE_OPENWRT_ARMVIRT="${SAVE_OPENWRT_ARMVIRT_VALUE}"
@@ -581,8 +580,8 @@ EOF
                         echo -e "${STEPS} (${i}.${k}) Start making compressed files in the [ ${SELECT_OUTPUTPATH} ] directory."
                         cd /opt/${SELECT_PACKITPATH}/${SELECT_OUTPUTPATH}
                         case "${GZIP_IMGS}" in
-                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %'; rename -v "s/.img//" %.7z' ;;
-                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %'; rename -v "s/.img//" %.zip' ;;
+                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %'; rename -v "s/.img//" %.7z ;;
+                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %'; rename -v "s/.img//" %.zip ;;
                             zst | .zst)    sudo zstd --rm *.img; rename -v 's/.img//' *.zst ;;
                             xz | .xz)      sudo xz -z *.img; rename -v 's/.img//' *.xz ;;
                             gz | .gz | *)  sudo pigz -f *.img; rename -v 's/.img//' *.gz ;;
