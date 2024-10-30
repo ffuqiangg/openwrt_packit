@@ -137,6 +137,7 @@ init_var() {
     [[ -n "${PACKAGE_SOC}" ]] || PACKAGE_SOC="${PACKAGE_SOC_VALUE}"
     [[ -n "${KERNEL_AUTO_LATEST}" ]] || KERNEL_AUTO_LATEST="${KERNEL_AUTO_LATEST_VALUE}"
     [[ -n "${GZIP_IMGS}" ]] || GZIP_IMGS="${GZIP_IMGS_VALUE}"
+    echo -e "${INFO} GZIP_IMGS = ${GZIP_IMGS}"
     [[ -n "${SELECT_PACKITPATH}" ]] || SELECT_PACKITPATH="${SELECT_PACKITPATH_VALUE}"
     [[ -n "${SELECT_OUTPUTPATH}" ]] || SELECT_OUTPUTPATH="${SELECT_OUTPUTPATH_VALUE}"
     [[ -n "${SAVE_OPENWRT_ARMVIRT}" ]] || SAVE_OPENWRT_ARMVIRT="${SAVE_OPENWRT_ARMVIRT_VALUE}"
@@ -342,7 +343,7 @@ query_kernel() {
                 kernel_verpatch="$(echo ${kernel_var} | awk -F '.' '{print $1"."$2}')"
 
                 # Query the latest kernel version
-                latest_version="$(curl -fsSL ${kernel_api}/releases/expanded_assets/kernel_${vb} | grep -oE "${kernel_verpatch}\.[0-9]+.*.tar.gz" | sed 's/.tar.gz//' | sort -urV | head -n 1)"
+                latest_version="$(curl -fsSL ${kernel_api}/releases/expanded_assets/kernel_${vb} | grep -oE "${kernel_verpatch}\.[0-9]+.*.tar.gz" | sed 's/.tar.gz//' | sort -urV | head -n 1)" 2>/dev/null
                 [[ ${KERNEL_REPO_URL} == *ffuqiangg* ]] && latest_version="$(curl -fsSL ${kernel_api}/releases | grep -oE "kernel_${kernel_verpatch}\.[0-9]+" | sed 's/kernel_//' | sort -urV | head -n 1)"
 
                 if [[ "$?" -eq "0" && -n "${latest_version}" ]]; then
