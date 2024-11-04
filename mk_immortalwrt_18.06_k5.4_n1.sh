@@ -176,7 +176,7 @@ sed -i -e '/ROOT1=/c\ROOT1=\"512\"' -e '/ROOT2=/c\ROOT2=\"512\"' ${OPENWRT_INSTA
 
 echo "修改根文件系统相关配置 ... "
 cd "$TGT_ROOT" || exit
-[ -f ./etc/config/cpufreq ] && sed -i "/cpufreq/a\  option governor0 'schedutil'\n  option minfreq0 '1000000'\n  option maxfreq0 '1512000'" ./etc/config/cpufreq
+# [ -f ./etc/config/cpufreq ] && sed -i "/cpufreq/a\  option governor0 'schedutil'\n  option minfreq0 '1000000'\n  option maxfreq0 '1512000'" ./etc/config/cpufreq
 sed -e 's,/bin/ash,/bin/bash,' -i ./etc/passwd; sed -e 's,/bin/ash,/bin/bash,' -i ./usr/libexec/login.sh
 copy_supplement_files
 extract_glibc_programs
