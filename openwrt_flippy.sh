@@ -127,7 +127,7 @@ init_var() {
 
     # Install the compressed package
     sudo apt-get -qq update
-    sudo apt-get -qq install -y curl git coreutils p7zip p7zip-full zip unzip gzip xz-utils pigz zstd jq tar rename
+    sudo apt-get -qq install -y curl git coreutils p7zip p7zip-full zip unzip gzip xz-utils pigz zstd jq tar
 
     # Specify the default value
     [[ -n "${SCRIPT_REPO_URL}" ]] || SCRIPT_REPO_URL="${SCRIPT_REPO_URL_VALUE}"
@@ -580,11 +580,11 @@ EOF
                         echo -e "${STEPS} (${i}.${k}) Start making compressed files in the [ ${SELECT_OUTPUTPATH} ] directory."
                         cd /opt/${SELECT_PACKITPATH}/${SELECT_OUTPUTPATH}
                         case "${GZIP_IMGS}" in
-                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %; rename -v "s/.img//" %.7z' ;;
-                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %; rename -v "s/.img//" %.zip' ;;
-                            zst | .zst)    sudo zstd --rm *.img; rename -v 's/.img//' *.zst ;;
-                            xz | .xz)      sudo xz -z *.img; rename -v 's/.img//' *.xz ;;
-                            gz | .gz | *)  sudo pigz -f *.img; rename -v 's/.img//' *.gz ;;
+                            7z | .7z)      ls *.img | head -n 1 | xargs -I % sh -c 'sudo 7z a -t7z -r %.7z %; rm -f %' ;;
+                            zip | .zip)    ls *.img | head -n 1 | xargs -I % sh -c 'sudo zip %.zip %; rm -f %' ;;
+                            zst | .zst)    sudo zstd --rm *.img ;;
+                            xz | .xz)      sudo xz -z *.img ;;
+                            gz | .gz | *)  sudo pigz -f *.img ;;
                         esac
                     }
 
@@ -634,7 +634,7 @@ out_github_env() {
 echo -e "${STEPS} Welcome to use the OpenWrt packaging tool! \n"
 echo -e "${INFO} Server CPU configuration information: \n$(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c) \n"
 
-# Start Initializing variables
+# Start initializing variables
 init_var
 init_packit_repo
 

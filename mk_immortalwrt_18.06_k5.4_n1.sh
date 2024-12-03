@@ -36,7 +36,7 @@ check_file "${OPWRT_ROOTFS_GZ}"
 echo "Use $OPWRT_ROOTFS_GZ as openwrt rootfs!"
 
 # 目标镜像文件
-TGT_IMG="${WORK_DIR}/${BOARD^}-ImmortalWrt-18.06-K5.4-${BUILD_DATE}.img"
+TGT_IMG="${WORK_DIR}/${BOARD^}-ImmortalWrt-18.06-K${KERNEL_VERSION}-${BUILD_DATE}.img"
 
 # 补丁和脚本
 ###########################################################################
