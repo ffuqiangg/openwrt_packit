@@ -348,7 +348,7 @@ query_kernel() {
                         grep -oE "${kernel_verpatch}.[0-9]+.*.tar.gz" | sed 's/.tar.gz//' |
                         sort -urV | head -n 1
                 )"
-                [[ ${KERNEL_REPO_URL_VALUE} == *ffuqiangg* ]] &&
+                [[ ${KERNEL_REPO_URL} == *ffuqiangg* ]] &&
                     latest_version="$(curl -fsSL ${kernel_api}/releases| grep -oE "kernel_${kernel_verpatch}.[0-9]+" | sed 's/kernel_//' | sort -urV | head -n 1)"
 
                 if [[ "$?" -eq "0" && -n "${latest_version}" ]]; then
@@ -424,7 +424,7 @@ download_kernel() {
                 if [[ ! -d "${kernel_path}/${kernel_var}" ]]; then
                     kernel_down_from="https://github.com/${KERNEL_REPO_URL}/releases/download/kernel_${vb}/${kernel_var}.tar.gz"
                     [[ ${KERNEL_REPO_URL} == *ffuqiangg* ]] &&
-                        kernel_down_from="https://github.com/${kernel_repo}/releases/download/kernel_${kernel_var}/${kernel_var}.tar.gz"
+                        kernel_down_from="https://github.com/${KERNEL_REPO_URL}/releases/download/kernel_${kernel_var}/${kernel_var}.tar.gz"
                     echo -e "${INFO} (${x}.${i}) [ ${vb} - ${kernel_var} ] Kernel download from [ ${kernel_down_from} ]"
 
                     # Download the kernel file. If the download fails, try again 10 times.
