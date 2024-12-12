@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# 自定义修改
+### 自定义修改 ###
 sed -i '/config\/samba4/,+3d' public_funcs
 sed -i -e '/ROOT1=/c\ROOT1=\"720\"' -e '/ROOT2=/c\ROOT2=\"720\"' files/openwrt-install-amlogic
 sed -i '/bin\/AdGuardHome/d;/S99dockerd/d' files/openwrt-install-amlogic
 sed -i 's| /mnt/${EMMC_NAME}p4/AdGuardHome/data||' files/openwrt-install-amlogic
+sed -i '/enable dockerd/,+7d' files/first_run.sh
+sed -i '/auto_start/,+1d' files/first_run.sh
 
 echo "========================= begin $0 ==========================="
 source make.env
@@ -181,7 +183,7 @@ echo "修改根文件系统相关配置 ... "
 cd $TGT_ROOT
 copy_supplement_files
 extract_glibc_programs
-adjust_docker_config
+# adjust_docker_config
 adjust_openssl_config
 adjust_qbittorrent_config
 adjust_getty_config
@@ -193,13 +195,15 @@ use_xrayplug_replace_v2rayplug
 create_fstab_config
 adjust_turboacc_config
 adjust_ntfs_config
-adjust_mosdns_config
+# adjust_mosdns_config
 patch_admin_status_index_html
 adjust_kernel_env
 copy_uboot_to_fs
 write_release_info
 # write_banner 
 config_first_run
+find ./ -name *.orig | xargs rm -f
+find ./ -name *.rej | xargs rm -f
 create_snapshot "etc-000"
 write_uboot_to_disk
 clean_work_env
