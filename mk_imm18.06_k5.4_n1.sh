@@ -1,12 +1,13 @@
 #!/bin/bash
 
 ### 自定义修改 ###
-sed -i '/config\/samba4/,+3d' public_funcs
+sed -i '/services/d;/SYSFIXTIME_PATCH/d' public_funcs
 sed -i -e '/ROOT1=/c\ROOT1=\"720\"' -e '/ROOT2=/c\ROOT2=\"720\"' files/openwrt-install-amlogic
 sed -i '/bin\/AdGuardHome/d;/S99dockerd/d' files/openwrt-install-amlogic
 sed -i 's| /mnt/${EMMC_NAME}p4/AdGuardHome/data||' files/openwrt-install-amlogic
 sed -i '/enable dockerd/,+7d' files/first_run.sh
 sed -i '/auto_start/,+1d' files/first_run.sh
+rm -f ./files/coremark.sh
 
 echo "========================= begin $0 ==========================="
 source make.env
@@ -67,7 +68,7 @@ SMB4_PATCH="${PWD}/files/smb4.11_enable_smb1.patch"
 SYSCTL_CUSTOM_CONF="${PWD}/files/99-custom.conf"
 
 # 20200709 add
-# COREMARK="${PWD}/files/coremark.sh"
+COREMARK="${PWD}/files/coremark.sh"
 
 # 20200930 add
 SND_MOD="${PWD}/files/s905d/snd-meson-gx"
