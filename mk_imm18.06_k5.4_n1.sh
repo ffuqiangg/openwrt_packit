@@ -106,7 +106,7 @@ GET_RANDOM_MAC="${PWD}/files/get_random_mac.sh"
 DOCKER_README="${PWD}/files/DockerReadme.pdf"
 
 # 20210704 add
-SYSINFO_SCRIPT="${PWD}/files/30-sysinfo.sh"
+# SYSINFO_SCRIPT="${PWD}/files/30-sysinfo.sh"
 
 # 20210923 add
 OPENWRT_INSTALL="${PWD}/files/openwrt-install-amlogic"
@@ -135,7 +135,7 @@ check_depends
 
 SKIP_MB=4
 BOOT_MB=256
-ROOTFS_MB=960
+ROOTFS_MB=820
 SIZE=$((SKIP_MB + BOOT_MB + ROOTFS_MB))
 create_image "$TGT_IMG" "$SIZE"
 create_partition "$TGT_DEV" "msdos" "$SKIP_MB" "$BOOT_MB" "fat32" "0" "-1" "btrfs"
