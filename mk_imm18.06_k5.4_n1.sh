@@ -1,14 +1,5 @@
 #!/bin/bash
 
-### 自定义修改 ###
-sed -i '/services/d;/SYSFIXTIME_PATCH/d' public_funcs
-sed -i '/COREMARK/,+3d' public_funcs
-sed -i -e '/ROOT1=/c\ROOT1=\"720\"' -e '/ROOT2=/c\ROOT2=\"720\"' files/openwrt-install-amlogic
-sed -i '/bin\/AdGuardHome/d;/S99dockerd/d' files/openwrt-install-amlogic
-sed -i 's| /mnt/${EMMC_NAME}p4/AdGuardHome/data||' files/openwrt-install-amlogic
-sed -i '/enable dockerd/,+7d' files/first_run.sh
-sed -i '/auto_start/,+1d' files/first_run.sh
-
 echo "========================= begin $0 ==========================="
 source make.env
 source public_funcs
@@ -68,7 +59,7 @@ SMB4_PATCH="${PWD}/files/smb4.11_enable_smb1.patch"
 SYSCTL_CUSTOM_CONF="${PWD}/files/99-custom.conf"
 
 # 20200709 add
-COREMARK="${PWD}/files/coremark.sh"
+# COREMARK="${PWD}/files/coremark.sh"
 
 # 20200930 add
 SND_MOD="${PWD}/files/s905d/snd-meson-gx"
@@ -80,7 +71,7 @@ FORCE_REBOOT="${PWD}/files/s905d/reboot"
 BAL_ETH_IRQ="${PWD}/files/balethirq.pl"
 # 20201026 add
 FIX_CPU_FREQ="${PWD}/files/fixcpufreq.pl"
-SYSFIXTIME_PATCH="${PWD}/files/sysfixtime.patch"
+# SYSFIXTIME_PATCH="${PWD}/files/sysfixtime.patch"
 
 # 20201128 add
 SSL_CNF_PATCH="${PWD}/files/openssl_engine.patch"
@@ -203,6 +194,12 @@ copy_uboot_to_fs
 write_release_info
 # write_banner 
 config_first_run
+sed -i -e '/ROOT1=/c\ROOT1=\"720\"' -e '/ROOT2=/c\ROOT2=\"720\"' usr/sbin/openwrt-install-amlogic
+sed -i '/bin\/AdGuardHome/d;/S99dockerd/d' usr/sbin/openwrt-install-amlogic
+sed -i 's| /mnt/${EMMC_NAME}p4/AdGuardHome/data||' usr/sbin/openwrt-install-amlogic
+sed -i 's/nas/services/g' usr/lib/lua/luci/controller/samba4.lua
+sed -i '/enable dockerd/,+7d' etc/first_run.sh
+sed -i '/auto_start/,+1d' etc/first_run.sh
 find ./ -name *.orig | xargs rm -f
 find ./ -name *.rej | xargs rm -f
 create_snapshot "etc-000"
