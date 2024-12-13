@@ -106,6 +106,7 @@ ENABLE_WIFI_K504_VALUE="1"
 ENABLE_WIFI_K510_VALUE="1"
 DISTRIB_REVISION_VALUE="R$(date +%Y.%m.%d)"
 DISTRIB_DESCRIPTION_VALUE="OpenWrt"
+BUILD_DATE_VALUE="$(date +%Y.%m.%d)"
 
 # Set font color
 STEPS="[\033[95m STEPS \033[0m]"
@@ -185,6 +186,7 @@ init_var() {
     [[ -n "${ENABLE_WIFI_K510}" ]] || ENABLE_WIFI_K510="${ENABLE_WIFI_K510_VALUE}"
     [[ -n "${DISTRIB_REVISION}" ]] || DISTRIB_REVISION="${DISTRIB_REVISION_VALUE}"
     [[ -n "${DISTRIB_DESCRIPTION}" ]] || DISTRIB_DESCRIPTION="${DISTRIB_DESCRIPTION_VALUE}"
+    [[ -n "${BUILD_DATE}" ]] || BUILD_DATE="${BUILD_DATE_VALUE}"
 
     # Confirm package object
     [[ "${PACKAGE_SOC}" != "all" ]] && {
