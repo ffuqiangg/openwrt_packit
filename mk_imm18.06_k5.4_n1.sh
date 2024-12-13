@@ -36,7 +36,7 @@ check_file ${OPWRT_ROOTFS_GZ}
 echo "Use $OPWRT_ROOTFS_GZ as openwrt rootfs!"
 
 # 目标镜像文件
-TGT_IMG="${WORK_DIR}/${DISTRIB_DESCRIPTION,,}_${PLATFORM}_${SOC}_k${KERNEL_VERSION}_${BUILD_DATE}.img"
+TGT_IMG="${WORK_DIR}/${DISTRIB_DESCRIPTION,,}_${PLATFORM}_${SOC}_k${KERNEL_VERSION%-*}_${BUILD_DATE}.img"
 
 # 补丁和脚本
 ###########################################################################
