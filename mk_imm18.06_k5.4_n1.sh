@@ -194,7 +194,7 @@ copy_uboot_to_fs
 write_release_info
 # write_banner 
 config_first_run
-sed -i -e '/ROOT1=/c\ROOT1=\"720\"' -e '/ROOT2=/c\ROOT2=\"720\"' usr/sbin/openwrt-install-amlogic
+sed -i -e '/ROOT1=/c\ROOT1=\"820\"' -e '/ROOT2=/c\ROOT2=\"820\"' usr/sbin/openwrt-install-amlogic
 sed -i '/bin\/AdGuardHome/d;/S99dockerd/d' usr/sbin/openwrt-install-amlogic
 sed -i 's| /mnt/${EMMC_NAME}p4/AdGuardHome/data||' usr/sbin/openwrt-install-amlogic
 sed -i 's/nas/services/g' usr/lib/lua/luci/controller/samba4.lua
